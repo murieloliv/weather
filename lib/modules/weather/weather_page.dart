@@ -78,13 +78,17 @@ class _WeatherPageState extends State<WeatherPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Icon(Icons.location_pin),
             Text(
               _weather?.cidade ?? 'Carregando cidade...',
               style: TextStyle(
                   color: getIsDay() ? const Color(0xFF10161E) : Colors.white),
             ),
-            Lottie.asset(
-              getWeatherAnimation(_weather?.condicao),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 100, top: 100),
+              child: Lottie.asset(
+                getWeatherAnimation(_weather?.condicao),
+              ),
             ),
             Text(
               '${calculaTemp(_weather?.temperatura ?? 0)} °C',
