@@ -7,13 +7,12 @@ import 'package:http/http.dart' as http;
 import 'package:weather/modules/weather/weather.dart';
 
 class WeatherService {
-  static const url = "https://api.openweathermap.org/data/2.5/weather?q=";
+  static const url = "https://api.hgbrasil.com/weather?key=";
   final String apiKey;
 
   WeatherService(this.apiKey);
   Future<Weather> getWeather(String cidade) async {
-    final response =
-        await http.get(Uri.parse('$url$cidade&appid=$apiKey&lang=pt'));
+    final response = await http.get(Uri.parse('$url$apiKey&city_name=$cidade'));
 
     if (response.statusCode == 200) {
       return Weather.fromJson(jsonDecode(response.body));
