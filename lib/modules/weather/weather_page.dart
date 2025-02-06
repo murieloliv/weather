@@ -13,7 +13,7 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  final _weatherService = WeatherService('504301ddb9991ce29c0732fe5eb38cc9');
+  final _weatherService = WeatherService('fe618f0a');
   Weather? _weather;
 
   _fetchWeather() async {
@@ -32,24 +32,46 @@ class _WeatherPageState extends State<WeatherPage> {
     if (condicao == null) {
       return 'assets/load.json';
     }
-    switch (condicao.toLowerCase()) {
-      case 'clouds':
-      case 'mist':
-      case 'smoke':
-      case 'haze':
-      case 'dust':
-      case 'fog':
-        return 'assets/cloud.json';
-      case 'rain':
-      case 'drizzle':
-      case 'shower rain':
-        return 'assets/sun_cloud_rain.json';
-      case 'thuderstorm':
-        return 'assets/storm.json';
-      case 'clear':
-        return 'assets/sun.json';
-      default:
-        return 'assets/sun.json';
+    if (getIsDay()) {
+      switch (condicao.toLowerCase()) {
+        case 'tempo nublado':
+        case 'mist':
+        case 'smoke':
+        case 'haze':
+        case 'dust':
+        case 'fog':
+          return 'assets/cloud.json';
+        case 'rain':
+        case 'drizzle':
+        case 'shower rain':
+          return 'assets/sun_cloud_rain.json';
+        case 'thuderstorm':
+          return 'assets/storm.json';
+        case 'clear':
+          return 'assets/sun.json';
+        default:
+          return 'assets/sun.json';
+      }
+    } else {
+      switch (condicao.toLowerCase()) {
+        case 'tempo nublado':
+        case 'mist':
+        case 'smoke':
+        case 'haze':
+        case 'dust':
+        case 'fog':
+          return 'assets/cloud.json';
+        case 'rain':
+        case 'drizzle':
+        case 'shower rain':
+          return 'assets/moon_cloud_rain.json';
+        case 'thuderstorm':
+          return 'assets/storm.json';
+        case 'clear':
+          return 'assets/moon.json';
+        default:
+          return 'assets/moon.json';
+      }
     }
   }
 
@@ -66,10 +88,6 @@ class _WeatherPageState extends State<WeatherPage> {
     _fetchWeather();
   }
 
-  int calculaTemp(double temp) {
-    return (temp - 273.15).round();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,28 +96,113 @@ class _WeatherPageState extends State<WeatherPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.location_pin),
-            Text(
-              _weather?.cidade ?? 'Carregando cidade...',
-              style: TextStyle(
-                  color: getIsDay() ? const Color(0xFF10161E) : Colors.white),
+            Icon(
+              Icons.location_pin,
+              color: getIsDay()
+                  ? const Color(0xFF10161E)
+                  : const Color(0xFFADACAC),
+              size: 40,
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 100, top: 100),
-              child: Lottie.asset(
-                getWeatherAnimation(_weather?.condicao),
+            Text(
+              (_weather?.cidade ?? 'Buscando Localização...').toUpperCase(),
+              style: TextStyle(
+                  color: getIsDay()
+                      ? const Color(0xFF10161E)
+                      : const Color(0xFFADACAC),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 100),
+            Text(
+              _weather?.condicao.toUpperCase() ?? '',
+              style: TextStyle(
+                color: getIsDay()
+                    ? const Color(0xFF10161E)
+                    : const Color(0xFFADACAC),
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              '${calculaTemp(_weather?.temperatura ?? 0)} °C',
-              style: TextStyle(
-                  color: getIsDay() ? const Color(0xFF10161E) : Colors.white),
+            Lottie.asset(
+              getWeatherAnimation(_weather?.condicao),
             ),
             Text(
-              _weather?.condicaoTraduzida ?? '',
+              '${_weather?.temperatura ?? 0}°C',
               style: TextStyle(
-                  color: getIsDay() ? const Color(0xFF10161E) : Colors.white),
+                color: getIsDay()
+                    ? const Color(0xFF10161E)
+                    : const Color(0xFFADACAC),
+                fontSize: 80,
+                fontWeight: FontWeight.bold,
+              ),
             ),
+            const SizedBox(height: 100),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      'Temperatura Mínima:'.toUpperCase(),
+                      style: TextStyle(
+                        color: getIsDay()
+                            ? const Color(0xFF10161E)
+                            : const Color(0xFFADACAC),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.arrow_downward_outlined,
+                          color: Colors.blue,
+                        ),
+                        Text(
+                          '${_weather?.tempMin ?? 0}°C',
+                          style: TextStyle(
+                            color: getIsDay()
+                                ? const Color(0xFF10161E)
+                                : const Color(0xFFADACAC),
+                            fontSize: 25,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const Divider(
+                  color: Colors.black,
+                ),
+                Column(
+                  children: [
+                    Text(
+                      'Temperatura Máxima:'.toUpperCase(),
+                      style: TextStyle(
+                        color: getIsDay()
+                            ? const Color(0xFF10161E)
+                            : const Color(0xFFADACAC),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.arrow_upward_outlined,
+                          color: Colors.red,
+                        ),
+                        Text(
+                          '${_weather?.tempMax ?? 0}°C',
+                          style: TextStyle(
+                            color: getIsDay()
+                                ? const Color(0xFF10161E)
+                                : const Color(0xFFADACAC),
+                            fontSize: 25,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            )
           ],
         ),
       ),
